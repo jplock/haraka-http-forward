@@ -64,16 +64,20 @@ exports.hook_data_post = function (next, connection) {
                     return callback(err);
                 }
                 if (!reply) {
-                    connection.loginfo('RCPT TO ' + key + ' not found in redis');
+                    connection.logerror('Key ' + key + ' not found in redis');
                     return callback();
                 }
                 else {
-                    connection.logdebug('Found RCPT TO ' + key + ' -> ' + reply);
+                    connection.logdebug('Found key ' + key + ' -> ' + reply);
                 }
 
                 var options = {
                     'uri': reply,
+                    'headers': {
+                        'Content-Type': 'text/plain; charset=utf-8'
+                    },
                     'method': 'post',
+                    'timeout': 1000,
                     'pool': false,
                     'jar': false
                 };
@@ -82,7 +86,8 @@ exports.hook_data_post = function (next, connection) {
                 var forward = request.post(options);
 
                 forward.on('error', function (err) {
-                    connection.logerror('Unable to connect to remote host: ' + reply);
+                    connection.logerror('Unable to connect to remote host: ' +
+                        reply);
                     return callback(err);
                 });
 
@@ -91,7 +96,8 @@ exports.hook_data_post = function (next, connection) {
                     return callback();
                 });
 
-                transaction.message_stream.pipe(forward, {'dot_stuffing': true, 'ending_dot': true});
+                transaction.message_stream.pipe(forward, {'dot_stuffing': true,
+                                                          'ending_dot': true});
             });
         },
         function (err) {
