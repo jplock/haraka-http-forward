@@ -1,0 +1,10 @@
+{
+    "name": "haraka_http_forward",
+    "description": "Haraka HTTP Forwarding plugin",
+    "version": "1.0.0",
+    "dependencies": {
+        "redis": "0.8.4",
+        "request": "2.26.0",
+        "async": "0.2.9"
+    }
+}
