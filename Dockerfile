@@ -8,19 +8,20 @@
 # docker run -d <imageid>
 # redis-cli -p <redisport>
 #
-# VERSION           0.1
-# DOCKER-VERSION    0.5.3
+# VERSION           0.2
+# DOCKER-VERSION    0.6.1
 
 FROM ubuntu
-
 MAINTAINER Justin Plock <jplock@gmail.com>
 
-RUN sed 's/main$/main universe/' -i /etc/apt/sources.list
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y -q update
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y -q install redis-server supervisor python-software-properties python g++ make git
+RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
+RUN apt-get update
+RUN apt-get upgrade -y
+
+RUN apt-get -y -q install redis-server supervisor python-software-properties python g++ make git
 RUN add-apt-repository ppa:chris-lea/node.js
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y -q update
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y -q install nodejs
+RUN apt-get -y -q update
+RUN apt-get -y -q install nodejs
 
 RUN npm install -g Haraka
 RUN mkdir -p /var/log/supervisor
